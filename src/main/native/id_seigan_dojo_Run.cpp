@@ -1,17 +1,16 @@
 #include <jni.h>
 #include <iostream>
 #include "id_seigan_dojo_Run.h"
-#include <iostream>
 #include <termios.h>
 #include <unistd.h>
 
 
 void detectArrowKeys(JNIEnv *env) {
-    jclass runClass = env -> FindClass("id/seigan/dojo/Run");
+    jclass runClass = env->FindClass("id/seigan/dojo/Run");
     jmethodID controlUp = env -> GetStaticMethodID(runClass, "controlUp", "()V");
     jmethodID controlDown = env -> GetStaticMethodID(runClass, "controlDown", "()V");
-    jmethodID controlRight = env -> GetStaticMethodID(runClass, "controlRight", "()V");
     jmethodID controlLeft = env -> GetStaticMethodID(runClass, "controlLeft", "()V");
+    jmethodID controlRight = env -> GetStaticMethodID(runClass, "controlRight", "()V");
 
     char c;
     while (true) {
@@ -39,6 +38,7 @@ void detectArrowKeys(JNIEnv *env) {
                         case 'D':
                             std::cout << "Left arrow key pressed\n";
                             env -> CallStaticVoidMethod(runClass, controlLeft);
+
                             break;
                     }
                 }
@@ -51,7 +51,6 @@ void detectArrowKeys(JNIEnv *env) {
 }
 
 
-// Function to set the terminal to raw mode
 void setRawMode(termios &orig_termios) {
     termios raw = orig_termios;
     raw.c_lflag &= ~(ECHO | ICANON);
@@ -65,23 +64,22 @@ void resetRawMode(const termios &orig_termios) {
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
 }
 
+
 JNIEXPORT void JNICALL Java_id_seigan_dojo_Run_controls
   (JNIEnv *env, jclass){
     termios orig_termios;
 
-    // Get the current terminal settings
-    tcgetattr(STDIN_FILENO, &orig_termios);
+        // Get the current terminal settings
+        tcgetattr(STDIN_FILENO, &orig_termios);
 
-    // Set the terminal to raw mode
-    setRawMode(orig_termios);
+        // Set the terminal to raw mode
+        setRawMode(orig_termios);
 
+        std::cout << "Press arrow keys (or 'q' to quit):\n";
 
+        // Detect arrow keys
+        detectArrowKeys(env);
 
-    // Detect arrow keys
-    detectArrowKeys(env);
-
-    // Reset the terminal to its original mode
-    resetRawMode(orig_termios);
-
-    //
-}
+        // Reset the terminal to its original mode
+        resetRawMode(orig_termios);
+ }

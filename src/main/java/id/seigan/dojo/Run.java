@@ -11,20 +11,17 @@ public class Run {
     static {
         System.loadLibrary("native");
 
-        Thread runControlsListener = new Thread(new Runnable() {
+        Thread runControl = new Thread(new Runnable() {
             @Override
             public void run() {
                 controls();
             }
         });
 
-        runControlsListener.start();
-
+        runControl.start();
     }
 
-    static native void controls();
-
-
+    public static native void controls();
 
     public static void controlUp(){
         switch (snake.getDirection()){
@@ -34,7 +31,6 @@ public class Run {
             case RIGHT -> {
                 snake.moveLeft(game.getBoard());
             }
-
         }
 
     }
@@ -47,46 +43,32 @@ public class Run {
             case RIGHT -> {
                 snake.moveRight(game.getBoard());
             }
-
-        }
-    }
-
-    public static void controlRight(){
-
-        switch (snake.getDirection()){
-            case UP -> {
-                snake.moveRight(game.getBoard());
-            }
-            case DOWN -> {
-                snake.moveRight(game.getBoard());
-            }
         }
     }
 
     public static void controlLeft(){
-        switch (snake.getDirection()){
-            case UP -> {
-                snake.moveLeft(game.getBoard());
-            }
-            case DOWN -> {
-                snake.moveLeft(game.getBoard());
-            }
-        }
+        snake.moveLeft(game.getBoard());
+    }
+
+    public static void controlRight(){
+        snake.moveRight(game.getBoard());
     }
 
     public static void main(String[] args) {
-//        controls();
+
         int row = 30;
         int col = 30;
 
         int posX = 5;
-        int posY = 20;
+        int posY = 10;
+
+        int snakeSize = 5;
 
         snake = Snake.getBuilder()
                 .setName("Ularku")
                 .setAppearance(" O ")
                 .setPosition(posX, posY)
-                .setSize(3)
+                .setSize(snakeSize)
                 .build();
 
         snake.generateBody();
